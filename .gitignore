@@ -13,4 +13,5 @@ test-result
 server.pid
 *.eml
 /dist/
+.env
 .cache
