@@ -17,7 +17,7 @@ class Assistant(Agent):
     def __init__(self) -> None:
         super().__init__(instructions=AGENT_INSTRUCTION)
 
-
+#use groq for faster outputs 
 async def entrypoint(ctx: agents.JobContext):
     session = AgentSession(
     llm=google.beta.realtime.RealtimeModel(
@@ -46,3 +46,4 @@ async def entrypoint(ctx: agents.JobContext):
 
 if __name__ == "__main__":
     agents.cli.run_app(agents.WorkerOptions(entrypoint_fnc=entrypoint))
+
