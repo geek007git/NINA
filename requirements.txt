@@ -1,4 +1,10 @@
-  livekit-agents
-  livekit-plugins-noise-cancellation~=0.2
-  python-dotenv
+# Runtime dependencies.
+#
+# The authoritative list lives in pyproject.toml; this file exists so that
+# `pip install -r requirements.txt` keeps working. For development extras use:
+#     pip install -e ".[dev]"
+
 livekit-agents[google]~=1.0
+livekit-plugins-noise-cancellation~=0.2
+python-dotenv>=1.0
+httpx>=0.27

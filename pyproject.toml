@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nina"
+version = "1.0.0"
+description = "NINA - a realtime voice AI assistant built on LiveKit Agents."
+readme = "README.md"
+requires-python = ">=3.10,<3.15"
+license = { file = "LICENSE" }
+authors = [{ name = "geek007git" }]
+keywords = ["voice-ai", "livekit", "agents", "gemini", "realtime", "assistant"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Multimedia :: Sound/Audio :: Speech",
+]
+
+dependencies = [
+  "livekit-agents[google]~=1.0",
+  "livekit-plugins-noise-cancellation~=0.2",
+  "python-dotenv>=1.0",
+  "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+  "ruff>=0.6",
+  "mypy>=1.11",
+]
+
+[project.scripts]
+nina = "nina.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/geek007git/NINA"
+Issues = "https://github.com/geek007git/NINA/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Lets the suite run straight from a clone, before `pip install -e .`.
+pythonpath = ["src"]
+addopts = "-q --strict-markers"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "C4", "RET", "ARG", "PTH"]
+ignore = ["B008"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ARG001", "ARG002"]
+# Tool callbacks must accept LiveKit's RunContext even when they ignore it.
+"src/nina/agent.py" = ["ARG001"]
+
+[tool.mypy]
+python_version = "3.10"
+files = ["src/nina"]
+strict = true
+warn_unused_ignores = false
+ignore_missing_imports = true
+disallow_subclassing_any = false
+disallow_untyped_decorators = false

@@ -1,49 +1,24 @@
-from dotenv import load_dotenv
+#!/usr/bin/env python
+"""Launcher kept at the repo root so `python agent.py dev` still works.
 
-from livekit import agents
-from livekit.agents import AgentSession, Agent, RoomInputOptions
-from livekit.plugins import (
-    
-    noise_cancellation,
-)
-from livekit.plugins import google
+The implementation now lives in the `nina` package under `src/`. This shim only
+makes the package importable when it has not been installed, then delegates.
 
-from prompt import AGENT_INSTRUCTION,AGENT_RESPONSE
+Preferred invocation once installed (`pip install -e .`):
 
-load_dotenv()
- 
+    nina dev
+"""
 
-class Assistant(Agent):
-    def __init__(self) -> None:
-        super().__init__(instructions=AGENT_INSTRUCTION)
+from __future__ import annotations
 
-#use groq for faster outputs 
-async def entrypoint(ctx: agents.JobContext):
-    session = AgentSession(
-    llm=google.beta.realtime.RealtimeModel(
-        model="gemini-2.0-flash-exp",
-        voice="Puck",
-        temperature=0.8,
-        instructions=AGENT_RESPONSE,
-    ),
-    )
+import sys
+from pathlib import Path
 
-    await session.start(
-        room=ctx.room,
-        agent=Assistant(),
-        room_input_options=RoomInputOptions(
-            # LiveKit Cloud enhanced noise cancellation
-            # - If self-hosting, omit this parameter
-            # - For telephony applications, use `BVCTelephony` for best results
-            noise_cancellation=noise_cancellation.BVC(),
-        ),
-    )
+_SRC = Path(__file__).resolve().parent / "src"
+if _SRC.is_dir() and str(_SRC) not in sys.path:
+    sys.path.insert(0, str(_SRC))
 
-    await session.generate_reply(
-        instructions=AGENT_RESPONSE
-    )
-
+from nina.__main__ import main  # noqa: E402  (path setup must run first)
 
 if __name__ == "__main__":
-    agents.cli.run_app(agents.WorkerOptions(entrypoint_fnc=entrypoint))
-
+    sys.exit(main())
